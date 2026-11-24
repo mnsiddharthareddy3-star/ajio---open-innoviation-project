@@ -1,0 +1,2146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AJIO | Online Shopping for Men, Women & Kids Fashion</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Playfair Display for editorial fashion headers -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        ajio: {
+                            dark: '#2c4152',
+                            darker: '#1e2d3a',
+                            gold: '#b09975',
+                            goldHover: '#96805d',
+                            light: '#f8f8f8',
+                            accent: '#d5a249',
+                            green: '#1e8e3e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-white text-gray-800 font-sans antialiased selection:bg-ajio-dark selection:text-white">
+
+    <!-- Top Utility Bar -->
+    <div class="bg-gray-100 border-b border-gray-200 text-xs text-gray-600 hidden md:block">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <span><i class="fa-solid fa-truck-fast text-ajio-dark mr-1"></i> Free Shipping on orders above ₹999</span>
+                <span>|</span>
+                <span><i class="fa-solid fa-rotate-left text-ajio-dark mr-1"></i> Easy 15-Day Returns</span>
+            </div>
+            <div class="flex items-center space-x-5">
+                <span id="dbStatusBadge" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Connecting DB...
+                </span>
+                <button onclick="openOrdersModal()" class="hover:text-ajio-dark font-medium transition">My Orders</button>
+                <button onclick="openAuthModal()" id="authBtnDesktop" class="font-medium text-ajio-dark hover:underline">Sign In / Join AJIO</button>
+                <span class="bg-ajio-dark text-white px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase">AJIO LUXE</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Sticky Header / Navigation -->
+    <header class="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 md:h-20">
+                
+                <!-- Mobile Menu Button & Logo -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-ajio-dark hover:bg-gray-100 focus:outline-none" aria-label="Open Menu">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                    <!-- AJIO Signature Wordmark -->
+                    <a href="#" onclick="resetFilters()" class="flex items-center group">
+                        <span class="text-3xl md:text-4xl font-extrabold tracking-[0.2em] text-ajio-dark group-hover:opacity-90 transition">
+                            AJIO
+                        </span>
+                    </a>
+                </div>
+
+                <!-- Desktop Category Navigation -->
+                <nav class="hidden md:flex items-center space-x-8 h-full">
+                    <button onclick="filterByCategory('All')" class="nav-link h-full flex items-center text-sm font-semibold tracking-wider text-ajio-dark border-b-2 border-ajio-dark uppercase transition" data-cat="All">
+                        All Stores
+                    </button>
+                    <button onclick="filterByCategory('Men')" class="nav-link h-full flex items-center text-sm font-semibold tracking-wider text-gray-600 hover:text-ajio-dark border-b-2 border-transparent hover:border-ajio-dark uppercase transition" data-cat="Men">
+                        Men
+                    </button>
+                    <button onclick="filterByCategory('Women')" class="nav-link h-full flex items-center text-sm font-semibold tracking-wider text-gray-600 hover:text-ajio-dark border-b-2 border-transparent hover:border-ajio-dark uppercase transition" data-cat="Women">
+                        Women
+                    </button>
+                    <button onclick="filterByCategory('Kids')" class="nav-link h-full flex items-center text-sm font-semibold tracking-wider text-gray-600 hover:text-ajio-dark border-b-2 border-transparent hover:border-ajio-dark uppercase transition" data-cat="Kids">
+                        Kids
+                    </button>
+                    <button onclick="filterByCategory('Footwear')" class="nav-link h-full flex items-center text-sm font-semibold tracking-wider text-gray-600 hover:text-ajio-dark border-b-2 border-transparent hover:border-ajio-dark uppercase transition" data-cat="Footwear">
+                        Footwear & Acc
+                    </button>
+                </nav>
+
+                <!-- Search Bar & Action Icons -->
+                <div class="flex items-center space-x-3 md:space-x-5">
+                    <!-- Desktop Search -->
+                    <div class="hidden sm:flex items-center bg-[#fffded] border border-gray-300 rounded-full px-4 py-1.5 w-56 lg:w-72 focus-within:border-ajio-dark focus-within:ring-1 focus-within:ring-ajio-dark transition">
+                        <input type="text" id="searchInput" onkeyup="handleSearch(this.value)" placeholder="Search AJIO" class="bg-transparent text-sm w-full focus:outline-none text-gray-800 placeholder-gray-500">
+                        <i class="fa-solid fa-magnifying-glass text-gray-500 text-sm"></i>
+                    </div>
+
+                    <!-- Wishlist Icon -->
+                    <button onclick="toggleWishlistDrawer()" class="relative p-2.5 rounded-full bg-ajio-dark text-white hover:bg-ajio-darker transition shadow-sm" aria-label="Wishlist">
+                        <i class="fa-regular fa-heart text-base"></i>
+                        <span id="wishlistBadge" class="hidden absolute -top-1 -right-1 bg-ajio-gold text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    </button>
+
+                    <!-- Shopping Bag Icon -->
+                    <button onclick="toggleCartDrawer()" class="relative p-2.5 rounded-full bg-ajio-dark text-white hover:bg-ajio-darker transition shadow-sm" aria-label="Shopping Bag">
+                        <i class="fa-solid fa-bag-shopping text-base"></i>
+                        <span id="cartBadge" class="absolute -top-1 -right-1 bg-ajio-accent text-ajio-darker text-[11px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center shadow">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="sm:hidden pb-3">
+                <div class="flex items-center bg-[#fffded] border border-gray-300 rounded-full px-4 py-2 w-full">
+                    <input type="text" id="mobileSearchInput" onkeyup="handleSearch(this.value)" placeholder="Search brands, styles, categories..." class="bg-transparent text-sm w-full focus:outline-none text-gray-800">
+                    <i class="fa-solid fa-magnifying-glass text-gray-500 text-sm"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Slide-down Navigation -->
+        <div id="mobileMenu" class="hidden md:hidden bg-white border-t border-gray-200 px-4 pt-2 pb-4 space-y-2 shadow-lg">
+            <button onclick="filterByCategory('All'); toggleMobileMenu()" class="block w-full text-left py-2.5 px-3 rounded-lg font-semibold text-ajio-dark hover:bg-gray-100">All Stores</button>
+            <button onclick="filterByCategory('Men'); toggleMobileMenu()" class="block w-full text-left py-2.5 px-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">Men</button>
+            <button onclick="filterByCategory('Women'); toggleMobileMenu()" class="block w-full text-left py-2.5 px-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">Women</button>
+            <button onclick="filterByCategory('Kids'); toggleMobileMenu()" class="block w-full text-left py-2.5 px-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">Kids</button>
+            <div class="pt-2 border-t border-gray-100 space-y-2">
+                <button onclick="openOrdersModal(); toggleMobileMenu()" class="w-full py-2 border border-ajio-dark text-ajio-dark rounded-lg font-semibold text-sm">My SQLite Orders</button>
+                <button onclick="openAuthModal(); toggleMobileMenu()" class="w-full py-2.5 bg-ajio-dark text-white rounded-lg font-semibold text-sm">Sign In / Join AJIO</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Banner Carousel -->
+        <section id="heroSection" class="relative bg-ajio-darker overflow-hidden">
+            <div id="heroSlides" class="relative h-[340px] sm:h-[420px] md:h-[480px] w-full">
+                <!-- Slide 1 -->
+                <div class="hero-slide absolute inset-0 transition-opacity duration-700 opacity-100 flex items-center bg-gradient-to-r from-[#1e2d3a] via-[#2c4152] to-[#3f586c]">
+                    <div class="max-w-7xl mx-auto px-6 sm:px-8 w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="text-white space-y-4 z-10">
+                            <span class="inline-block bg-ajio-gold text-white text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full">Big Bold Sale</span>
+                            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+                                FLAT <span class="text-ajio-accent">50-80% OFF</span><br>
+                                <span class="font-serif italic font-normal text-2xl sm:text-4xl">International & Indie Brands</span>
+                            </h1>
+                            <p class="text-gray-200 text-sm sm:text-base max-w-md">Upgrade your wardrobe with curated seasonal edits. Extra ₹500 off on your first order with code <strong class="text-ajio-accent">AJIONEW</strong>.</p>
+                            <div class="pt-2 flex flex-wrap gap-3">
+                                <button onclick="scrollToProducts('All')" class="bg-white text-ajio-dark hover:bg-gray-100 font-bold px-6 py-3 rounded-lg text-sm uppercase tracking-wider transition shadow-md">
+                                    Shop Now
+                                </button>
+                                <button onclick="scrollToProducts('Women')" class="border border-white text-white hover:bg-white/10 font-semibold px-6 py-3 rounded-lg text-sm uppercase tracking-wider transition">
+                                    Explore Women
+                                </button>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex justify-end relative">
+                            <div class="w-80 h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10 transform rotate-2">
+                                <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80" alt="Fashion Editorial" onerror="handleImgError(this, 'AJIO FASHION', '#2c4152')" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2 -->
+                <div class="hero-slide absolute inset-0 transition-opacity duration-700 opacity-0 pointer-events-none flex items-center bg-gradient-to-r from-[#3a2618] via-[#593a24] to-[#7a5233]">
+                    <div class="max-w-7xl mx-auto px-6 sm:px-8 w-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div class="text-white space-y-4 z-10">
+                            <span class="inline-block bg-white text-[#3a2618] text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full">Sneakerhood Edit</span>
+                            <h2 class="text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
+                                STEP UP YOUR <span class="text-amber-300">STREET GAME</span>
+                            </h2>
+                            <p class="text-amber-100 text-sm sm:text-base max-w-md">Limited edition kicks, running essentials, and everyday classics starting at ₹1,499.</p>
+                            <div class="pt-2">
+                                <button onclick="scrollToProducts('Footwear')" class="bg-amber-400 text-gray-900 hover:bg-amber-300 font-bold px-6 py-3 rounded-lg text-sm uppercase tracking-wider transition shadow-md">
+                                    Shop Footwear
+                                </button>
+                            </div>
+                        </div>
+                        <div class="hidden md:flex justify-end">
+                            <div class="w-80 h-96 rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10 transform -rotate-2">
+                                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80" alt="Sneaker Collection" onerror="handleImgError(this, 'SNEAKERHOOD', '#593a24')" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carousel Indicators -->
+            <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+                <button onclick="setSlide(0)" class="slide-dot w-8 h-1.5 rounded-full bg-white transition-all"></button>
+                <button onclick="setSlide(1)" class="slide-dot w-3 h-1.5 rounded-full bg-white/40 transition-all"></button>
+            </div>
+        </section>
+
+        <!-- Promotional Coupon Strip -->
+        <section class="bg-amber-50 border-y border-amber-200/80 py-3">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-center text-xs sm:text-sm">
+                <span class="font-bold text-ajio-dark uppercase tracking-wider"><i class="fa-solid fa-tags text-ajio-gold mr-1.5"></i> Bank Offer: 10% Instant Discount on ICICI & HDFC Cards</span>
+                <button onclick="copyCoupon('AJIO500')" class="bg-white border border-dashed border-ajio-gold text-ajio-dark font-bold px-3 py-1 rounded-md hover:bg-ajio-gold hover:text-white transition flex items-center gap-1.5">
+                    <span>Use Code: AJIO500</span>
+                    <i class="fa-regular fa-copy text-xs"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Visual Category Bubbles -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="flex items-center justify-between mb-5">
+                <h2 class="text-lg sm:text-xl font-bold text-ajio-dark tracking-tight uppercase">Shop By Category</h2>
+                <button onclick="resetFilters()" class="text-xs font-semibold text-ajio-gold hover:underline uppercase tracking-wider">View All</button>
+            </div>
+            <div class="grid grid-cols-3 sm:grid-cols-5 gap-4 sm:gap-6">
+                <button onclick="filterByCategory('Men')" class="group flex flex-col items-center text-center focus:outline-none">
+                    <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-ajio-dark transition shadow-sm mb-2">
+                        <img src="https://images.unsplash.com/photo-1617137968427-85924c800a22?auto=format&fit=crop&w=400&q=80" alt="Men" onerror="handleImgError(this, 'MEN', '#2c4152')" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <span class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-ajio-dark">Men's Edit</span>
+                </button>
+
+                <button onclick="filterByCategory('Women')" class="group flex flex-col items-center text-center focus:outline-none">
+                    <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-ajio-dark transition shadow-sm mb-2">
+                        <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=400&q=80" alt="Women" onerror="handleImgError(this, 'WOMEN', '#b09975')" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <span class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-ajio-dark">Women's Trends</span>
+                </button>
+
+                <button onclick="filterByCategory('Kids')" class="group flex flex-col items-center text-center focus:outline-none">
+                    <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-ajio-dark transition shadow-sm mb-2">
+                        <img src="https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=400&q=80" alt="Kids" onerror="handleImgError(this, 'KIDS', '#3f586c')" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <span class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-ajio-dark">Kids & Junior</span>
+                </button>
+
+                <button onclick="filterByCategory('Footwear')" class="group flex flex-col items-center text-center focus:outline-none">
+                    <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-gray-200 group-hover:border-ajio-dark transition shadow-sm mb-2">
+                        <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=400&q=80" alt="Footwear" onerror="handleImgError(this, 'FOOTWEAR', '#1e2d3a')" class="w-full h-full object-cover group-hover:scale-105 transition duration-300">
+                    </div>
+                    <span class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-ajio-dark">Footwear</span>
+                </button>
+
+                <button onclick="filterByDiscount()" class="group flex flex-col items-center text-center focus:outline-none">
+                    <div class="w-20 h-20 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-ajio-gold bg-ajio-dark flex items-center justify-center group-hover:scale-105 transition shadow-sm mb-2">
+                        <div class="text-center text-white px-2">
+                            <span class="block text-sm sm:text-lg font-extrabold text-ajio-accent">50%+</span>
+                            <span class="block text-[10px] uppercase tracking-wider">Steal Deals</span>
+                        </div>
+                    </div>
+                    <span class="text-xs sm:text-sm font-bold text-gray-800 group-hover:text-ajio-dark">Best Offers</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Product Catalog Section with Sidebar Filters -->
+        <section id="catalogSection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 border-t border-gray-200">
+            <div class="flex flex-col lg:flex-row gap-8">
+                
+                <!-- Left Filter Sidebar (Desktop) & Filter Bar (Mobile) -->
+                <aside class="w-full lg:w-64 flex-shrink-0">
+                    <div class="bg-gray-50 p-5 rounded-xl border border-gray-200/80 sticky top-24">
+                        <div class="flex items-center justify-between pb-3 border-b border-gray-200">
+                            <h3 class="font-bold text-ajio-dark uppercase text-sm tracking-wider">Refine By</h3>
+                            <button onclick="resetFilters()" class="text-xs font-semibold text-ajio-gold hover:underline">Clear All</button>
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div class="py-4 border-b border-gray-200">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Gender / Category</h4>
+                            <div class="space-y-2 text-sm">
+                                <label class="flex items-center space-x-2.5 cursor-pointer">
+                                    <input type="radio" name="catFilter" value="All" checked onchange="filterByCategory(this.value)" class="text-ajio-dark focus:ring-ajio-dark">
+                                    <span>All Products</span>
+                                </label>
+                                <label class="flex items-center space-x-2.5 cursor-pointer">
+                                    <input type="radio" name="catFilter" value="Men" onchange="filterByCategory(this.value)" class="text-ajio-dark focus:ring-ajio-dark">
+                                    <span>Men</span>
+                                </label>
+                                <label class="flex items-center space-x-2.5 cursor-pointer">
+                                    <input type="radio" name="catFilter" value="Women" onchange="filterByCategory(this.value)" class="text-ajio-dark focus:ring-ajio-dark">
+                                    <span>Women</span>
+                                </label>
+                                <label class="flex items-center space-x-2.5 cursor-pointer">
+                                    <input type="radio" name="catFilter" value="Kids" onchange="filterByCategory(this.value)" class="text-ajio-dark focus:ring-ajio-dark">
+                                    <span>Kids</span>
+                                </label>
+                                <label class="flex items-center space-x-2.5 cursor-pointer">
+                                    <input type="radio" name="catFilter" value="Footwear" onchange="filterByCategory(this.value)" class="text-ajio-dark focus:ring-ajio-dark">
+                                    <span>Footwear</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Brand Filter -->
+                        <div class="py-4 border-b border-gray-200">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Top Brands</h4>
+                            <div id="brandCheckboxes" class="space-y-2 text-sm max-h-48 overflow-y-auto pr-1">
+                                <!-- Populated via JS -->
+                            </div>
+                        </div>
+
+                        <!-- Price Range Filter -->
+                        <div class="pt-4">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Max Price: <span id="priceLabel" class="text-ajio-dark font-extrabold">₹5,000</span></h4>
+                            <input type="range" id="priceRange" min="500" max="5000" step="250" value="5000" oninput="handlePriceFilter(this.value)" class="w-full accent-ajio-dark cursor-pointer">
+                            <div class="flex justify-between text-xs text-gray-400 mt-1">
+                                <span>₹500</span>
+                                <span>₹5,000</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Right Product Grid Area -->
+                <div class="flex-1">
+                    <!-- Top Controls Bar -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 mb-6 border-b border-gray-200">
+                        <div>
+                            <h2 id="catalogHeading" class="text-xl font-bold text-ajio-dark">Trending Styles</h2>
+                            <p id="productCount" class="text-xs text-gray-500 mt-0.5">Showing 42 items</p>
+                        </div>
+
+                        <div class="flex items-center space-x-3">
+                            <label for="sortSelect" class="text-xs font-semibold text-gray-500 uppercase">Sort By:</label>
+                            <select id="sortSelect" onchange="handleSort(this.value)" class="bg-gray-50 border border-gray-300 text-gray-800 text-sm rounded-lg px-3 py-2 focus:outline-none focus:border-ajio-dark">
+                                <option value="featured">Relevance</option>
+                                <option value="price-low">Price: Low to High</option>
+                                <option value="price-high">Price: High to Low</option>
+                                <option value="discount">Discount %</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div id="productsGrid" class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+                        <!-- Rendered dynamically via JS -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" class="hidden text-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
+                        <i class="fa-solid fa-shirt text-4xl text-gray-300 mb-3"></i>
+                        <h3 class="text-lg font-bold text-ajio-dark">No matching styles found</h3>
+                        <p class="text-sm text-gray-500 mt-1 mb-4">Try adjusting your filters or search keywords.</p>
+                        <button onclick="resetFilters()" class="bg-ajio-dark text-white px-5 py-2.5 rounded-lg text-sm font-semibold hover:bg-ajio-darker transition">Reset All Filters</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Trust Badges Section -->
+    <section class="bg-gray-100 border-t border-gray-200 mt-16 py-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
+            <div class="flex flex-col items-center">
+                <div class="w-12 h-12 rounded-full bg-ajio-dark/10 text-ajio-dark flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                </div>
+                <h4 class="font-bold text-sm uppercase tracking-wider text-ajio-dark">Easy Exchange</h4>
+                <p class="text-xs text-gray-500 mt-1">Hassle-free doorstep pickup & instant size exchange</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <div class="w-12 h-12 rounded-full bg-ajio-dark/10 text-ajio-dark flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                </div>
+                <h4 class="font-bold text-sm uppercase tracking-wider text-ajio-dark">100% Handpicked</h4>
+                <p class="text-xs text-gray-500 mt-1">Curated authentic styles from global & indie labels</p>
+            </div>
+            <div class="flex flex-col items-center">
+                <div class="w-12 h-12 rounded-full bg-ajio-dark/10 text-ajio-dark flex items-center justify-center text-xl mb-3">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h4 class="font-bold text-sm uppercase tracking-wider text-ajio-dark">Assured Quality</h4>
+                <p class="text-xs text-gray-500 mt-1">Strict multi-point quality inspection on every order</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Signature AJIO Dark Footer -->
+    <footer class="bg-ajio-dark text-gray-300 pt-12 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-white/10 text-xs">
+                <div>
+                    <h5 class="text-white font-bold uppercase tracking-wider mb-4">AJIO</h5>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="hover:text-white transition">Who We Are</a></li>
+                        <li><a href="#" class="hover:text-white transition">Join Our Team</a></li>
+                        <li><a href="#" class="hover:text-white transition">Terms & Conditions</a></li>
+                        <li><a href="#" class="hover:text-white transition">We Respect Your Privacy</a></li>
+                        <li><a href="#" class="hover:text-white transition">Fees & Payments</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold uppercase tracking-wider mb-4">Help</h5>
+                    <ul class="space-y-2.5">
+                        <li><a href="#" class="hover:text-white transition">Track Your Order</a></li>
+                        <li><a href="#" class="hover:text-white transition">Frequently Asked Questions</a></li>
+                        <li><a href="#" class="hover:text-white transition">Returns & Cancellations</a></li>
+                        <li><a href="#" class="hover:text-white transition">Customer Care</a></li>
+                        <li><a href="#" class="hover:text-white transition">How Do I Redeem My Coupon</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold uppercase tracking-wider mb-4">Shop By</h5>
+                    <ul class="space-y-2.5">
+                        <li><button onclick="filterByCategory('Men')" class="hover:text-white transition">Men</button></li>
+                        <li><button onclick="filterByCategory('Women')" class="hover:text-white transition">Women</button></li>
+                        <li><button onclick="filterByCategory('Kids')" class="hover:text-white transition">Kids</button></li>
+                        <li><button onclick="filterByCategory('Footwear')" class="hover:text-white transition">Footwear</button></li>
+                        <li><button onclick="resetFilters()" class="hover:text-white transition">New Arrivals</button></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="text-white font-bold uppercase tracking-wider mb-4">Follow Us</h5>
+                    <div class="flex space-x-3 text-base">
+                        <a href="#" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-ajio-gold hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-ajio-gold hover:text-white transition"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-ajio-gold hover:text-white transition"><i class="fa-brands fa-twitter"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-ajio-gold hover:text-white transition"><i class="fa-brands fa-pinterest"></i></a>
+                    </div>
+                    <p class="mt-4 text-[11px] text-gray-400">100% Secure Payment via UPI, Cards & NetBanking.</p>
+                </div>
+            </div>
+            <div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-gray-400">
+                <span class="font-extrabold tracking-[0.2em] text-white text-lg mb-2 sm:mb-0">AJIO</span>
+                <p>© 2026 AJIO Fashion Storefront Project. Built for academic & portfolio demonstration.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Quick View / Product Details Modal -->
+    <div id="productModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl max-w-3xl w-full overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2 relative">
+            <button onclick="closeProductModal()" class="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-white/90 text-gray-800 hover:bg-gray-200 flex items-center justify-center shadow">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="bg-gray-100 h-72 md:h-full">
+                <img id="modalImg" src="" alt="Product" onerror="handleImgError(this, 'AJIO STYLE', '#2c4152')" class="w-full h-full object-cover">
+            </div>
+            <div class="p-6 sm:p-8 flex flex-col justify-between">
+                <div>
+                    <span id="modalBrand" class="text-xs font-bold uppercase tracking-widest text-ajio-gold">BRAND</span>
+                    <h3 id="modalTitle" class="text-xl font-bold text-gray-900 mt-1">Product Name</h3>
+                    
+                    <div class="flex items-center space-x-2 mt-2">
+                        <span id="modalRating" class="bg-ajio-green text-white text-xs font-bold px-2 py-0.5 rounded flex items-center gap-1">
+                            4.4 <i class="fa-solid fa-star text-[10px]"></i>
+                        </span>
+                        <span class="text-xs text-gray-500">(128 Verified Ratings)</span>
+                    </div>
+
+                    <div class="mt-4 flex items-baseline space-x-3">
+                        <span id="modalPrice" class="text-2xl font-extrabold text-ajio-dark">₹1,299</span>
+                        <span id="modalMrp" class="text-sm text-gray-400 line-through">₹2,599</span>
+                        <span id="modalDiscount" class="text-sm font-bold text-ajio-gold">(50% OFF)</span>
+                    </div>
+                    <p class="text-[11px] text-gray-500 mt-1">Price inclusive of all taxes</p>
+
+                    <!-- Size Selection -->
+                    <div class="mt-6">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-gray-700">Select Size</span>
+                            <span class="text-xs text-ajio-gold font-medium">Size Chart</span>
+                        </div>
+                        <div id="modalSizes" class="flex flex-wrap gap-2">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+
+                    <p id="modalDesc" class="text-xs text-gray-600 mt-5 leading-relaxed">
+                        Crafted from breathable premium fabric for all-day comfort and sharp silhouette.
+                    </p>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gray-100 flex gap-3">
+                    <button id="modalAddToCartBtn" class="flex-1 bg-ajio-gold hover:bg-ajio-goldHover text-white font-bold py-3 px-4 rounded-xl text-sm uppercase tracking-wider transition flex items-center justify-center gap-2 shadow">
+                        <i class="fa-solid fa-bag-shopping"></i> Add to Bag
+                    </button>
+                    <button id="modalWishlistBtn" class="p-3 rounded-xl border border-gray-300 text-gray-700 hover:border-ajio-dark hover:text-ajio-dark transition">
+                        <i class="fa-regular fa-heart text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide-Over Shopping Bag Drawer -->
+    <div id="cartDrawer" class="fixed inset-0 z-50 hidden">
+        <div onclick="toggleCartDrawer()" class="absolute inset-0 bg-black/50 backdrop-blur-xs"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col">
+            <!-- Header -->
+            <div class="p-5 bg-ajio-dark text-white flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-bag-shopping"></i>
+                    <h3 class="font-bold tracking-wider uppercase text-sm">My Shopping Bag (<span id="drawerCartCount">0</span>)</h3>
+                </div>
+                <button onclick="toggleCartDrawer()" class="p-1.5 rounded-lg hover:bg-white/10 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <!-- Cart Items List -->
+            <div id="cartItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Populated dynamically -->
+            </div>
+
+            <!-- Coupon & Summary Footer -->
+            <div id="cartFooter" class="border-t border-gray-200 p-5 bg-gray-50 space-y-4">
+                <!-- Promo Code Input -->
+                <div class="flex gap-2">
+                    <input type="text" id="couponInput" placeholder="Enter coupon (e.g. AJIO500)" class="flex-1 bg-white border border-gray-300 rounded-lg px-3 py-2 text-xs uppercase focus:outline-none focus:border-ajio-dark">
+                    <button onclick="applyCoupon()" class="bg-ajio-dark text-white px-4 py-2 rounded-lg text-xs font-bold uppercase tracking-wider hover:bg-ajio-darker transition">Apply</button>
+                </div>
+
+                <!-- Price Breakdown -->
+                <div class="space-y-1.5 text-xs">
+                    <div class="flex justify-between text-gray-600">
+                        <span>Bag Total</span>
+                        <span id="summaryMrp">₹0</span>
+                    </div>
+                    <div class="flex justify-between text-ajio-green font-medium">
+                        <span>Bag Discount</span>
+                        <span id="summaryDiscount">-₹0</span>
+                    </div>
+                    <div id="couponDiscountRow" class="hidden flex justify-between text-ajio-gold font-semibold">
+                        <span>Coupon Savings (AJIO500)</span>
+                        <span>-₹500</span>
+                    </div>
+                    <div class="flex justify-between text-gray-600">
+                        <span>Delivery Fee</span>
+                        <span class="text-ajio-green font-semibold">FREE</span>
+                    </div>
+                    <div class="flex justify-between text-base font-extrabold text-ajio-dark pt-2 border-t border-gray-200">
+                        <span>Order Total</span>
+                        <span id="summaryTotal">₹0</span>
+                    </div>
+                </div>
+
+                <div class="bg-amber-50/70 border border-amber-200 rounded-lg px-3 py-2 text-[11px] text-gray-700 flex items-center justify-between">
+                    <span><i class="fa-solid fa-route text-ajio-dark mr-1"></i> <strong>Step 1:</strong> Address & Pincode</span>
+                    <span><i class="fa-solid fa-arrow-right text-gray-400 mx-1"></i></span>
+                    <span><strong>Step 2:</strong> UPI / Card / COD</span>
+                </div>
+
+                <button onclick="proceedToCheckout()" class="w-full bg-ajio-gold hover:bg-ajio-goldHover text-white font-bold py-3.5 rounded-xl text-sm uppercase tracking-wider shadow-md transition">
+                    Step 1: Enter Address & Pincode
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide-Over Wishlist Drawer -->
+    <div id="wishlistDrawer" class="fixed inset-0 z-50 hidden">
+        <div onclick="toggleWishlistDrawer()" class="absolute inset-0 bg-black/50"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col">
+            <div class="p-5 bg-ajio-dark text-white flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-heart text-ajio-gold"></i>
+                    <h3 class="font-bold tracking-wider uppercase text-sm">My Closet / Wishlist</h3>
+                </div>
+                <button onclick="toggleWishlistDrawer()" class="p-1.5 rounded-lg hover:bg-white/10 transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div id="wishlistItemsContainer" class="flex-1 overflow-y-auto p-5 space-y-4">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign In / Checkout Simulation Modal -->
+    <div id="authModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative">
+            <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div class="text-center mb-6">
+                <span class="text-2xl font-extrabold tracking-[0.2em] text-ajio-dark">AJIO</span>
+                <h3 id="authModalTitle" class="text-lg font-bold text-gray-900 mt-2">Welcome to AJIO</h3>
+                <p id="authModalSubtitle" class="text-xs text-gray-500 mt-1">Sign in to access your bag, wishlist & orders</p>
+            </div>
+            <form onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Full Name</label>
+                    <input type="text" id="userNameInput" required placeholder="e.g. Aarav Sharma" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-ajio-dark">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Mobile Number or Email</label>
+                    <input type="text" id="userContactInput" required placeholder="9876543210 or name@example.com" class="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-ajio-dark">
+                </div>
+                <button type="submit" class="w-full bg-ajio-gold hover:bg-ajio-goldHover text-white font-bold py-3 rounded-xl text-sm uppercase tracking-wider transition shadow">
+                    Continue
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- SQLite Order History Modal -->
+    <div id="ordersModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between pb-4 border-b border-gray-200">
+                <div>
+                    <h3 class="text-lg font-bold text-ajio-dark">Order History (SQLite Database)</h3>
+                    <p class="text-xs text-gray-500">Live records fetched from <code>database/ajio.sqlite</code></p>
+                </div>
+                <button onclick="closeOrdersModal()" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="ordersListContainer" class="flex-1 overflow-y-auto py-4 space-y-3">
+                <p class="text-xs text-gray-500 text-center py-8">Loading orders...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two-Step Checkout Modal: 1. Address & Pincode -> 2. Payment Method -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-7 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="mb-5">
+                <span class="text-xs font-extrabold tracking-[0.2em] text-ajio-dark uppercase">AJIO Checkout</span>
+                <div class="flex items-center gap-3 mt-2 text-xs font-bold">
+                    <span id="step1Indicator" class="px-3 py-1 rounded-full bg-ajio-dark text-white">1. Address & Pincode</span>
+                    <i class="fa-solid fa-chevron-right text-gray-400 text-[10px]"></i>
+                    <span id="step2Indicator" class="px-3 py-1 rounded-full bg-gray-100 text-gray-500">2. Payment Method</span>
+                </div>
+            </div>
+
+            <!-- STEP 1: Shipping Address & Pincode -->
+            <form id="addressStepForm" onsubmit="submitAddressStep(event)" class="space-y-3.5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Full Name</label>
+                        <input type="text" id="shipName" required placeholder="Recipient Name" class="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-ajio-dark">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">10-Digit Mobile</label>
+                        <input type="tel" id="shipPhone" required pattern="[0-9]{10}" maxlength="10" placeholder="9876543210" class="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-ajio-dark">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Delivery Address (House No., Street, Area)</label>
+                    <textarea id="shipAddress" rows="2" required placeholder="Flat / House No., Building, Street Name, Landmark" class="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-ajio-dark"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Pincode</label>
+                        <input type="text" id="shipPincode" required pattern="[1-9][0-9]{5}" maxlength="6" placeholder="400001" oninput="checkPincodeServiceability(this.value)" class="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:border-ajio-dark">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">City</label>
+                        <input type="text" id="shipCity" required placeholder="Mumbai" class="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-ajio-dark">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">State</label>
+                        <input type="text" id="shipState" required placeholder="Maharashtra" class="w-full border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-ajio-dark">
+                    </div>
+                </div>
+
+                <p id="pincodeStatusMsg" class="text-xs text-gray-500 min-h-[1rem]"></p>
+
+                <button type="submit" class="w-full bg-ajio-dark hover:bg-ajio-darker text-white font-bold py-3 rounded-xl text-sm uppercase tracking-wider transition shadow">
+                    Continue to Payment <i class="fa-solid fa-arrow-right ml-1.5"></i>
+                </button>
+            </form>
+
+            <!-- STEP 2: Payment Method Selection -->
+            <div id="paymentStepContainer" class="hidden space-y-4">
+                <div class="bg-gray-50 border border-gray-200 rounded-xl p-3.5 flex items-start justify-between gap-2 text-xs">
+                    <div>
+                        <span class="font-bold text-ajio-dark block">Delivering to <span id="summaryShipName"></span></span>
+                        <span id="summaryShipFullAddress" class="text-gray-600 block mt-0.5"></span>
+                        <span class="text-emerald-700 font-semibold block mt-1">Pincode: <span id="summaryShipPincode"></span> • Free Delivery</span>
+                    </div>
+                    <button type="button" onclick="backToAddressStep()" class="text-ajio-gold font-bold hover:underline shrink-0">Change</button>
+                </div>
+
+                <div class="space-y-2.5" id="paymentMethodOptions">
+                    <label class="flex items-center gap-3 p-3.5 rounded-xl border-2 border-ajio-dark bg-amber-50/40 cursor-pointer transition">
+                        <input type="radio" name="paymentMethod" value="UPI" checked onchange="handlePaymentMethodChange(this.value)" class="accent-ajio-dark">
+                        <div class="flex-1">
+                            <span class="text-sm font-bold text-gray-900 block">UPI (GPay, PhonePe, Paytm, BHIM)</span>
+                            <span class="text-xs text-gray-500">Instant payment using your UPI ID</span>
+                        </div>
+                        <i class="fa-solid fa-mobile-screen-button text-ajio-dark text-lg"></i>
+                    </label>
+
+                    <label class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 hover:border-ajio-dark cursor-pointer transition">
+                        <input type="radio" name="paymentMethod" value="Credit / Debit Card" onchange="handlePaymentMethodChange(this.value)" class="accent-ajio-dark">
+                        <div class="flex-1">
+                            <span class="text-sm font-bold text-gray-900 block">Credit / Debit Card</span>
+                            <span class="text-xs text-gray-500">Visa, Mastercard, RuPay</span>
+                        </div>
+                        <i class="fa-regular fa-credit-card text-ajio-dark text-lg"></i>
+                    </label>
+
+                    <label class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 hover:border-ajio-dark cursor-pointer transition">
+                        <input type="radio" name="paymentMethod" value="NetBanking" onchange="handlePaymentMethodChange(this.value)" class="accent-ajio-dark">
+                        <div class="flex-1">
+                            <span class="text-sm font-bold text-gray-900 block">NetBanking</span>
+                            <span class="text-xs text-gray-500">All major Indian banks supported</span>
+                        </div>
+                        <i class="fa-solid fa-building-columns text-ajio-dark text-lg"></i>
+                    </label>
+
+                    <label class="flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 hover:border-ajio-dark cursor-pointer transition">
+                        <input type="radio" name="paymentMethod" value="Cash on Delivery" onchange="handlePaymentMethodChange(this.value)" class="accent-ajio-dark">
+                        <div class="flex-1">
+                            <span class="text-sm font-bold text-gray-900 block">Cash on Delivery (COD)</span>
+                            <span class="text-xs text-gray-500">Pay cash or scan QR upon delivery</span>
+                        </div>
+                        <i class="fa-solid fa-money-bill-wave text-emerald-700 text-lg"></i>
+                    </label>
+                </div>
+
+                <!-- Dynamic Payment Details Box -->
+                <div id="upiDetailsBox" class="space-y-1.5">
+                    <label class="block text-xs font-bold uppercase text-gray-600">Enter UPI ID</label>
+                    <input type="text" id="upiIdInput" placeholder="yourname@okaxis" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-ajio-dark">
+                </div>
+
+                <div id="cardDetailsBox" class="hidden grid grid-cols-2 gap-3">
+                    <div class="col-span-2">
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Card Number</label>
+                        <input type="text" id="cardNumberInput" maxlength="19" placeholder="4111 2222 3333 4444" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-ajio-dark">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Expiry (MM/YY)</label>
+                        <input type="text" id="cardExpiryInput" maxlength="5" placeholder="08/29" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-ajio-dark">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-gray-600 mb-1">CVV</label>
+                        <input type="password" id="cardCvvInput" maxlength="4" placeholder="123" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm focus:outline-none focus:border-ajio-dark">
+                    </div>
+                </div>
+
+                <div id="netbankingDetailsBox" class="hidden">
+                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Select Bank</label>
+                    <select id="bankSelectInput" class="w-full border border-gray-300 rounded-xl px-3.5 py-2 text-sm bg-white focus:outline-none focus:border-ajio-dark">
+                        <option value="HDFC Bank">HDFC Bank</option>
+                        <option value="ICICI Bank">ICICI Bank</option>
+                        <option value="State Bank of India">State Bank of India (SBI)</option>
+                        <option value="Axis Bank">Axis Bank</option>
+                        <option value="Kotak Mahindra Bank">Kotak Mahindra Bank</option>
+                    </select>
+                </div>
+
+                <div class="pt-3 border-t border-gray-200 flex items-center justify-between">
+                    <div>
+                        <span class="text-xs text-gray-500 block">Payable Amount</span>
+                        <span id="checkoutPayableAmount" class="text-lg font-extrabold text-ajio-dark">₹0</span>
+                    </div>
+                    <button type="button" onclick="completePaymentAndOrder()" class="bg-ajio-gold hover:bg-ajio-goldHover text-white font-bold py-3 px-6 rounded-xl text-sm uppercase tracking-wider transition shadow-md">
+                        Pay & Place Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Application Logic -->
+    <script>
+        // ==========================================
+        // 0. APPLICATION STATE & IMAGE FALLBACK
+        // ==========================================
+        const state = {
+            category: 'All',
+            selectedBrands: [],
+            maxPrice: 5000,
+            searchQuery: '',
+            sortBy: 'featured',
+            minDiscountOnly: false,
+            currentSlide: 0,
+            cart: [],
+            wishlist: [],
+            couponApplied: false,
+            user: null,
+            shippingAddress: null,
+            payableTotal: 0
+        };
+
+        function createFallbackDataUri(label = 'AJIO', bg = '#2c4152') {
+            const safeLabel = String(label || 'AJIO').slice(0, 18);
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="800" viewBox="0 0 600 800">
+                <rect width="600" height="800" fill="${bg}"/>
+                <text x="50%" y="48%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="Inter, Arial, sans-serif" font-size="36" font-weight="800" letter-spacing="4">${safeLabel}</text>
+                <text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#d5a249" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="600" letter-spacing="3">AJIO COLLECTION</text>
+            </svg>`;
+            return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+        }
+
+        function handleImgError(imgEl, label = 'AJIO', bg = '#2c4152') {
+            if (!imgEl || imgEl.dataset.fallbackApplied) return;
+            imgEl.dataset.fallbackApplied = 'true';
+            imgEl.src = createFallbackDataUri(label, bg);
+        }
+
+        // ==========================================
+        // 1. PRODUCT CATALOG DATASET (FALLBACK + INITIAL)
+        // ==========================================
+        let PRODUCTS = [
+            // --- MEN (12 Items) ---
+            {
+                id: 1,
+                brand: "NETPLAY",
+                name: "Slim Fit Cotton Casual Oxford Shirt",
+                category: "Men",
+                price: 899,
+                mrp: 1799,
+                rating: 4.4,
+                sizes: ["S", "M", "L", "XL"],
+                image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80",
+                description: "Tailored from 100% breathable combed cotton with a button-down collar for effortless smart-casual styling."
+            },
+            {
+                id: 2,
+                brand: "DNMX",
+                name: "Mid-Rise Washed Skinny Fit Jeans",
+                category: "Men",
+                price: 1199,
+                mrp: 2399,
+                rating: 4.3,
+                sizes: ["30", "32", "34", "36"],
+                image: "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=600&q=80",
+                description: "Stretch-infused denim featuring subtle whisker fading and classic 5-pocket construction."
+            },
+            {
+                id: 3,
+                brand: "TEAMSPIRIT",
+                name: "Colorblock Athleisure Bomber Jacket",
+                category: "Men",
+                price: 1349,
+                mrp: 2699,
+                rating: 4.4,
+                sizes: ["S", "M", "L", "XL"],
+                image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=600&q=80",
+                description: "Lightweight wind-resistant bomber with ribbed cuffs, zip pockets, and modern colorblock paneling."
+            },
+            {
+                id: 4,
+                brand: "SUPERDRY",
+                name: "Vintage Logo Embroidered Crewneck Tee",
+                category: "Men",
+                price: 1599,
+                mrp: 2999,
+                rating: 4.6,
+                sizes: ["S", "M", "L", "XL"],
+                image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80",
+                description: "Heavyweight organic cotton jersey t-shirt finished with signature heritage chest embroidery."
+            },
+            {
+                id: 5,
+                brand: "JOHN PLAYERS",
+                name: "Checked Regular Fit Flannel Overshirt",
+                category: "Men",
+                price: 1299,
+                mrp: 2599,
+                rating: 4.5,
+                sizes: ["S", "M", "L", "XL"],
+                image: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?auto=format&fit=crop&w=600&q=80",
+                description: "Brushed cotton flannel shirt ideal for layering over basic tees during cool evenings."
+            },
+            {
+                id: 6,
+                brand: "US POLO ASSN",
+                name: "Classic Pique Polo T-Shirt with Tipping",
+                category: "Men",
+                price: 1399,
+                mrp: 2499,
+                rating: 4.7,
+                sizes: ["S", "M", "L", "XL", "XXL"],
+                image: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?auto=format&fit=crop&w=600&q=80",
+                description: "Iconic breathable cotton pique polo finished with contrast collar tipping and embroidered crest."
+            },
+            {
+                id: 7,
+                brand: "LEVIS",
+                name: "511 Slim Tapered Indigo Denim Jeans",
+                category: "Men",
+                price: 2199,
+                mrp: 3999,
+                rating: 4.8,
+                sizes: ["30", "32", "34", "36"],
+                image: "https://images.unsplash.com/photo-1604176354204-9268737828e4?auto=format&fit=crop&w=600&q=80",
+                description: "Signature 511 cut sitting below the waist with a streamlined fit through the thigh and ankle."
+            },
+            {
+                id: 8,
+                brand: "NETPLAY",
+                name: "Tailored Flat-Front Cotton Chinos",
+                category: "Men",
+                price: 1099,
+                mrp: 2199,
+                rating: 4.3,
+                sizes: ["30", "32", "34", "36"],
+                image: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=600&q=80",
+                description: "Soft-touch stretch twill chinos designed for seamless transition from desk to dinner."
+            },
+            {
+                id: 9,
+                brand: "JACK & JONES",
+                name: "Distressed Trucker Denim Jacket",
+                category: "Men",
+                price: 2249,
+                mrp: 4499,
+                rating: 4.6,
+                sizes: ["M", "L", "XL"],
+                image: "https://images.unsplash.com/photo-1576871337622-98d48d1cf531?auto=format&fit=crop&w=600&q=80",
+                description: "Rugged washed denim jacket with metallic shank buttons and dual chest flap pockets."
+            },
+            {
+                id: 10,
+                brand: "PUMA",
+                name: "Essentials Fleece Zip-Up Hoodie",
+                category: "Men",
+                price: 1799,
+                mrp: 3499,
+                rating: 4.5,
+                sizes: ["S", "M", "L", "XL"],
+                image: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=600&q=80",
+                description: "Cozy fleece-lined full-zip sweatshirt with drawstring hood and kangaroo pockets."
+            },
+            {
+                id: 11,
+                brand: "LOUIS PHILIPPE",
+                name: "Textured Formal Tailored Blazer",
+                category: "Men",
+                price: 3499,
+                mrp: 6999,
+                rating: 4.7,
+                sizes: ["38", "40", "42", "44"],
+                image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80",
+                description: "Single-breasted notched-lapel blazer crafted in fine suiting fabric for sharp formal occasions."
+            },
+            {
+                id: 12,
+                brand: "DNMX",
+                name: "Cargo Jogger Pants with Flap Pockets",
+                category: "Men",
+                price: 1149,
+                mrp: 2299,
+                rating: 4.4,
+                sizes: ["30", "32", "34"],
+                image: "https://images.unsplash.com/photo-1517438476312-10d79c077509?auto=format&fit=crop&w=600&q=80",
+                description: "Utility-inspired cotton twill cargo joggers with elasticated cuffs and drawstring waist."
+            },
+
+            // --- WOMEN (12 Items) ---
+            {
+                id: 13,
+                brand: "AVAASA MIX N' MATCH",
+                name: "Floral Print Straight Cotton Kurta",
+                category: "Women",
+                price: 649,
+                mrp: 1299,
+                rating: 4.6,
+                sizes: ["XS", "S", "M", "L", "XL"],
+                image: "https://images.unsplash.com/photo-1583391733956-6c78276477e2?auto=format&fit=crop&w=600&q=80",
+                description: "Vibrant ethnic motif kurta crafted in soft handloom-inspired cotton with side slits and notched neckline."
+            },
+            {
+                id: 14,
+                brand: "FIG",
+                name: "Pleated Midi Wrap Dress with Belt",
+                category: "Women",
+                price: 1499,
+                mrp: 2999,
+                rating: 4.7,
+                sizes: ["S", "M", "L"],
+                image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80",
+                description: "Flowy georgette wrap silhouette with waist tie-up belt, ideal for brunch dates and evening outings."
+            },
+            {
+                id: 15,
+                brand: "RIO",
+                name: "High-Rise Wide Leg Linen Trousers",
+                category: "Women",
+                price: 1099,
+                mrp: 2199,
+                rating: 4.5,
+                sizes: ["28", "30", "32", "34"],
+                image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&w=600&q=80",
+                description: "Breezy linen-cotton blend trousers offering a relaxed wide-leg drape and tailored waistband."
+            },
+            {
+                id: 16,
+                brand: "FUSION",
+                name: "Embroidered Anarkali Festive Kurta Set",
+                category: "Women",
+                price: 1899,
+                mrp: 3799,
+                rating: 4.8,
+                sizes: ["S", "M", "L", "XL"],
+                image: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80",
+                description: "Graceful flared Anarkali kurta featuring delicate yoke embroidery paired with matching palazzo pants."
+            },
+            {
+                id: 17,
+                brand: "VERO MODA",
+                name: "Puff-Sleeve Satin Wrap Blouse",
+                category: "Women",
+                price: 1299,
+                mrp: 2599,
+                rating: 4.5,
+                sizes: ["XS", "S", "M", "L"],
+                image: "https://images.unsplash.com/photo-1551163943-3f6a855d1153?auto=format&fit=crop&w=600&q=80",
+                description: "Lustrous satin-finish top with voluminous sleeves and a flattering V-neckline."
+            },
+            {
+                id: 18,
+                brand: "ONLY",
+                name: "Cropped Oversized Washed Denim Jacket",
+                category: "Women",
+                price: 1799,
+                mrp: 3599,
+                rating: 4.6,
+                sizes: ["XS", "S", "M", "L"],
+                image: "https://images.unsplash.com/photo-1543076447-215ad9ba6923?auto=format&fit=crop&w=600&q=80",
+                description: "Contemporary cropped denim layer with drop shoulders and raw-edge hem detailing."
+            },
+            {
+                id: 19,
+                brand: "MANGO",
+                name: "Double-Breasted Tailored Trench Coat",
+                category: "Women",
+                price: 3299,
+                mrp: 5999,
+                rating: 4.8,
+                sizes: ["S", "M", "L"],
+                image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?auto=format&fit=crop&w=600&q=80",
+                description: "Timeless structured trench coat with storm flaps, belted waist, and tortoiseshell buttons."
+            },
+            {
+                id: 20,
+                brand: "W",
+                name: "Printed Tiered Maxi Boho Skirt",
+                category: "Women",
+                price: 1199,
+                mrp: 2399,
+                rating: 4.4,
+                sizes: ["S", "M", "L", "XL"],
+                image: "https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?auto=format&fit=crop&w=600&q=80",
+                description: "Flowing tiered cotton skirt adorned with block-inspired prints and comfortable elasticated waist."
+            },
+            {
+                id: 21,
+                brand: "LEVIS",
+                name: "721 High-Rise Skinny Ankle Jeans",
+                category: "Women",
+                price: 1899,
+                mrp: 3499,
+                rating: 4.7,
+                sizes: ["26", "28", "30", "32"],
+                image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=600&q=80",
+                description: "Sculpting high-rise denim engineered to hold and lift with all-day stretch recovery."
+            },
+            {
+                id: 22,
+                brand: "INDYA",
+                name: "Foil-Print Draped Tunic & Dupatta",
+                category: "Women",
+                price: 1649,
+                mrp: 3299,
+                rating: 4.6,
+                sizes: ["S", "M", "L", "XL"],
+                image: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=600&q=80",
+                description: "Festive ready-to-wear draped tunic embellished with subtle gold foil accents."
+            },
+            {
+                id: 23,
+                brand: "MARKS & SPENCER",
+                name: "Ribbed Knit Turtleneck Pullover",
+                category: "Women",
+                price: 1399,
+                mrp: 2799,
+                rating: 4.5,
+                sizes: ["XS", "S", "M", "L"],
+                image: "https://images.unsplash.com/photo-1576566588028-4147f3842f27?auto=format&fit=crop&w=600&q=80",
+                description: "Fine-gauge ribbed knit sweater offering sleek layering warmth without bulk."
+            },
+            {
+                id: 24,
+                brand: "FOREVER 21",
+                name: "Ruched Bodycon Sundress with Slit",
+                category: "Women",
+                price: 999,
+                mrp: 1999,
+                rating: 4.3,
+                sizes: ["XS", "S", "M", "L"],
+                image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=600&q=80",
+                description: "Summer-ready floral sundress with adjustable spaghetti straps and side slit."
+            },
+
+            // --- KIDS (8 Items) ---
+            {
+                id: 25,
+                brand: "KG FRENDZ",
+                name: "Graphic Print Cotton Hoodie & Joggers Set",
+                category: "Kids",
+                price: 799,
+                mrp: 1599,
+                rating: 4.5,
+                sizes: ["4-5Y", "6-7Y", "8-9Y", "10-12Y"],
+                image: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=600&q=80",
+                description: "Super-soft French terry coordinated tracksuit designed for active play and cozy comfort."
+            },
+            {
+                id: 26,
+                brand: "POINT COVE",
+                name: "Tiered Ruffle Denim Party Dress",
+                category: "Kids",
+                price: 699,
+                mrp: 1399,
+                rating: 4.7,
+                sizes: ["3-4Y", "5-6Y", "7-8Y"],
+                image: "https://images.unsplash.com/photo-1518831959646-742c3a14ebf7?auto=format&fit=crop&w=600&q=80",
+                description: "Chambray lightweight denim dress with flutter sleeves and tiered flared hem."
+            },
+            {
+                id: 27,
+                brand: "UCB KIDS",
+                name: "Colorblock Striped Cotton Polo Tee",
+                category: "Kids",
+                price: 649,
+                mrp: 1299,
+                rating: 4.6,
+                sizes: ["4-5Y", "6-7Y", "8-9Y"],
+                image: "https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&w=600&q=80",
+                description: "Vibrant multi-stripe cotton polo shirt built for everyday school and weekend adventures."
+            },
+            {
+                id: 28,
+                brand: "MOTHERCARE",
+                name: "Pastel Tulle Bow Birthday Frock",
+                category: "Kids",
+                price: 1199,
+                mrp: 2399,
+                rating: 4.8,
+                sizes: ["2-3Y", "4-5Y", "6-7Y"],
+                image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80",
+                description: "Layered soft tulle occasion dress lined with 100% cotton for gentle skin comfort."
+            },
+            {
+                id: 29,
+                brand: "MAX KIDS",
+                name: "Denim Dungaree Shorts with Printed Tee",
+                category: "Kids",
+                price: 899,
+                mrp: 1799,
+                rating: 4.5,
+                sizes: ["3-4Y", "5-6Y", "7-8Y"],
+                image: "https://images.unsplash.com/photo-1519457431-44ccd64a579b?auto=format&fit=crop&w=600&q=80",
+                description: "Two-piece playful dungaree set with adjustable buckle straps and soft crew-neck tee."
+            },
+            {
+                id: 30,
+                brand: "ADIDAS KIDS",
+                name: "3-Stripes Tricot Track Suit",
+                category: "Kids",
+                price: 1499,
+                mrp: 2999,
+                rating: 4.7,
+                sizes: ["6-7Y", "8-9Y", "10-12Y"],
+                image: "https://images.unsplash.com/photo-1471286174890-9c112ffca5b4?auto=format&fit=crop&w=600&q=80",
+                description: "Sporty zip-up track jacket and tapered pants featuring signature 3-Stripes detailing."
+            },
+            {
+                id: 31,
+                brand: "GINI & JONY",
+                name: "Checked Hooded Shirt & Chino Set",
+                category: "Kids",
+                price: 999,
+                mrp: 1999,
+                rating: 4.4,
+                sizes: ["4-5Y", "6-7Y", "8-9Y"],
+                image: "https://images.unsplash.com/photo-1514090458221-65bb69cf63e6?auto=format&fit=crop&w=600&q=80",
+                description: "Smart casual plaid hooded shirt paired with stretchable beige cotton chinos."
+            },
+            {
+                id: 32,
+                brand: "PEPPERMINT",
+                name: "Floral Jacquard Sleeveless Party Gown",
+                category: "Kids",
+                price: 1299,
+                mrp: 2599,
+                rating: 4.6,
+                sizes: ["4-5Y", "6-7Y", "8-9Y", "10-12Y"],
+                image: "https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80",
+                description: "Textured floral jacquard gown with satin waist sash and concealed back zip."
+            },
+
+            // --- FOOTWEAR & ACCESSORIES (10 Items) ---
+            {
+                id: 33,
+                brand: "NIKE",
+                name: "Air Max Court Vision Low Sneakers",
+                category: "Footwear",
+                price: 3495,
+                mrp: 4995,
+                rating: 4.8,
+                sizes: ["UK 7", "UK 8", "UK 9", "UK 10"],
+                image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=80",
+                description: "Inspired by mid-1980s basketball shoes with crisp synthetic leather overlays and cushioned rubber cupsole."
+            },
+            {
+                id: 34,
+                brand: "PUMA",
+                name: "Velocity Nitro Running Shoes",
+                category: "Footwear",
+                price: 2799,
+                mrp: 4999,
+                rating: 4.6,
+                sizes: ["UK 6", "UK 7", "UK 8", "UK 9"],
+                image: "https://images.unsplash.com/photo-1608231387042-66d1773070a5?auto=format&fit=crop&w=600&q=80",
+                description: "Engineered mesh upper paired with responsive foam midsole for superior energy return."
+            },
+            {
+                id: 35,
+                brand: "STEVE MADDEN",
+                name: "Block Heel Strappy Embellished Sandals",
+                category: "Footwear",
+                price: 2499,
+                mrp: 4999,
+                rating: 4.5,
+                sizes: ["UK 4", "UK 5", "UK 6", "UK 7"],
+                image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=600&q=80",
+                description: "Statement metallic-accented block heels with cushioned footbed for festive and party wear."
+            },
+            {
+                id: 36,
+                brand: "ADIDAS",
+                name: "Grand Court Classic White Sneakers",
+                category: "Footwear",
+                price: 2999,
+                mrp: 4999,
+                rating: 4.7,
+                sizes: ["UK 7", "UK 8", "UK 9", "UK 10"],
+                image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=600&q=80",
+                description: "Clean tennis-inspired everyday sneakers with Cloudfoam comfort sockliner."
+            },
+            {
+                id: 37,
+                brand: "CLARKS",
+                name: "Genuine Leather Penny Loafers",
+                category: "Footwear",
+                price: 2899,
+                mrp: 5499,
+                rating: 4.6,
+                sizes: ["UK 7", "UK 8", "UK 9", "UK 10"],
+                image: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=600&q=80",
+                description: "Hand-finished supple leather slip-on loafers with cushioned insole for formal elegance."
+            },
+            {
+                id: 38,
+                brand: "ALDO",
+                name: "Quilted Crossbody Chain Sling Bag",
+                category: "Footwear",
+                price: 2199,
+                mrp: 4399,
+                rating: 4.7,
+                sizes: ["One Size"],
+                image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=600&q=80",
+                description: "Chic chevron-quilted faux leather sling bag with gold-tone chain strap and turn-lock closure."
+            },
+            {
+                id: 39,
+                brand: "CONVERSE",
+                name: "Chuck Taylor All Star High-Top Canvas",
+                category: "Footwear",
+                price: 2699,
+                mrp: 4499,
+                rating: 4.8,
+                sizes: ["UK 6", "UK 7", "UK 8", "UK 9", "UK 10"],
+                image: "https://images.unsplash.com/photo-1491553895911-0055eca6402d?auto=format&fit=crop&w=600&q=80",
+                description: "Unmistakable high-top canvas sneakers with vulcanized rubber sole and iconic ankle patch."
+            },
+            {
+                id: 40,
+                brand: "WOODLAND",
+                name: "Nubuck Leather Outdoor Ankle Boots",
+                category: "Footwear",
+                price: 3199,
+                mrp: 4995,
+                rating: 4.6,
+                sizes: ["UK 7", "UK 8", "UK 9", "UK 10"],
+                image: "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=600&q=80",
+                description: "Rugged trail-ready boots crafted from durable nubuck leather with high-traction lug outsole."
+            },
+            {
+                id: 41,
+                brand: "FOSSIL",
+                name: "Chronograph Stainless Steel Analog Watch",
+                category: "Footwear",
+                price: 3999,
+                mrp: 7995,
+                rating: 4.8,
+                sizes: ["One Size"],
+                image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=600&q=80",
+                description: "Water-resistant precision quartz chronograph watch with sunray dial and brushed steel bracelet."
+            },
+            {
+                id: 42,
+                brand: "CATWALK",
+                name: "Pointed-Toe Suede Stiletto Pumps",
+                category: "Footwear",
+                price: 1499,
+                mrp: 2999,
+                rating: 4.4,
+                sizes: ["UK 4", "UK 5", "UK 6", "UK 7"],
+                image: "https://images.unsplash.com/photo-1535043934128-cf0b28d52f95?auto=format&fit=crop&w=600&q=80",
+                description: "Classic pointed-toe faux suede heels that elevate both office tailoring and evening dresses."
+            }
+        ];
+
+        // ==========================================
+        // 3. INITIALIZATION, SQLITE API SYNC & HERO SLIDER
+        // ==========================================
+        window.onload = async function() {
+            await syncWithBackendDatabase();
+            renderBrandCheckboxes();
+            renderProducts();
+            updateBadges();
+            startHeroCarousel();
+        };
+
+        async function syncWithBackendDatabase() {
+            const badge = document.getElementById('dbStatusBadge');
+            try {
+                const res = await fetch('/api/products');
+                if (!res.ok) throw new Error('Backend server not detected');
+                const dbProducts = await res.json();
+                if (Array.isArray(dbProducts) && dbProducts.length > 0) {
+                    PRODUCTS = dbProducts;
+                    if (badge) {
+                        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> SQLite Connected (${dbProducts.length} items)`;
+                    }
+                }
+            } catch (err) {
+                console.info('Running in standalone preview mode:', err.message);
+                if (badge) {
+                    badge.className = 'bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1';
+                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Preview Mode (Start server for SQLite)`;
+                }
+            }
+        }
+
+        function startHeroCarousel() {
+            setInterval(() => {
+                const next = (state.currentSlide + 1) % 2;
+                setSlide(next);
+            }, 5500);
+        }
+
+        function setSlide(index) {
+            state.currentSlide = index;
+            const slides = document.querySelectorAll('.hero-slide');
+            const dots = document.querySelectorAll('.slide-dot');
+            
+            slides.forEach((slide, i) => {
+                if (i === index) {
+                    slide.classList.remove('opacity-0', 'pointer-events-none');
+                    slide.classList.add('opacity-100');
+                } else {
+                    slide.classList.remove('opacity-100');
+                    slide.classList.add('opacity-0', 'pointer-events-none');
+                }
+            });
+
+            dots.forEach((dot, i) => {
+                if (i === index) {
+                    dot.classList.remove('w-3', 'bg-white/40');
+                    dot.classList.add('w-8', 'bg-white');
+                } else {
+                    dot.classList.remove('w-8', 'bg-white');
+                    dot.classList.add('w-3', 'bg-white/40');
+                }
+            });
+        }
+
+        // ==========================================
+        // 4. FILTERING, SEARCH & RENDERING CATALOG
+        // ==========================================
+        function renderBrandCheckboxes() {
+            const brands = [...new Set(PRODUCTS.map(p => p.brand))];
+            const container = document.getElementById('brandCheckboxes');
+            container.innerHTML = brands.map(brand => `
+                <label class="flex items-center space-x-2.5 cursor-pointer">
+                    <input type="checkbox" value="${brand.replace(/"/g, '&quot;')}" onchange="toggleBrandFilter(this.value)" class="brand-checkbox rounded text-ajio-dark focus:ring-ajio-dark">
+                    <span class="truncate text-gray-700">${brand}</span>
+                </label>
+            `).join('');
+        }
+
+        function filterByCategory(category) {
+            state.category = category;
+            state.minDiscountOnly = false;
+
+            // Update active nav links
+            document.querySelectorAll('.nav-link').forEach(btn => {
+                if (btn.dataset.cat === category) {
+                    btn.classList.add('text-ajio-dark', 'border-ajio-dark');
+                    btn.classList.remove('text-gray-600', 'border-transparent');
+                } else {
+                    btn.classList.remove('text-ajio-dark', 'border-ajio-dark');
+                    btn.classList.add('text-gray-600', 'border-transparent');
+                }
+            });
+
+            // Sync sidebar radio buttons
+            const radios = document.querySelectorAll('input[name="catFilter"]');
+            radios.forEach(r => r.checked = (r.value === category));
+
+            document.getElementById('catalogHeading').textContent = category === 'All' ? 'Trending Styles' : `${category}'s Fashion Edit`;
+            renderProducts();
+        }
+
+        function filterByDiscount() {
+            state.minDiscountOnly = true;
+            state.category = 'All';
+            document.getElementById('catalogHeading').textContent = 'Steal Deals (50% OFF & Above)';
+            scrollToProducts('All');
+            state.minDiscountOnly = true;
+            renderProducts();
+        }
+
+        function scrollToProducts(category) {
+            if (category) filterByCategory(category);
+            document.getElementById('catalogSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function toggleBrandFilter(brand) {
+            const idx = state.selectedBrands.indexOf(brand);
+            if (idx > -1) {
+                state.selectedBrands.splice(idx, 1);
+            } else {
+                state.selectedBrands.push(brand);
+            }
+            renderProducts();
+        }
+
+        function handlePriceFilter(val) {
+            state.maxPrice = parseInt(val);
+            document.getElementById('priceLabel').textContent = `₹${state.maxPrice.toLocaleString('en-IN')}`;
+            renderProducts();
+        }
+
+        function handleSearch(query) {
+            state.searchQuery = query.toLowerCase().trim();
+            // Keep desktop & mobile search inputs synced
+            document.getElementById('searchInput').value = query;
+            document.getElementById('mobileSearchInput').value = query;
+            renderProducts();
+        }
+
+        function handleSort(sortVal) {
+            state.sortBy = sortVal;
+            renderProducts();
+        }
+
+        function resetFilters() {
+            state.category = 'All';
+            state.selectedBrands = [];
+            state.maxPrice = 5000;
+            state.searchQuery = '';
+            state.sortBy = 'featured';
+            state.minDiscountOnly = false;
+
+            document.getElementById('searchInput').value = '';
+            document.getElementById('mobileSearchInput').value = '';
+            document.getElementById('priceRange').value = 5000;
+            document.getElementById('priceLabel').textContent = '₹5,000';
+            document.getElementById('sortSelect').value = 'featured';
+            document.querySelectorAll('.brand-checkbox').forEach(cb => cb.checked = false);
+
+            filterByCategory('All');
+        }
+
+        function getDiscountPercent(product) {
+            return Math.round(((product.mrp - product.price) / product.mrp) * 100);
+        }
+
+        function renderProducts() {
+            let filtered = PRODUCTS.filter(p => {
+                const matchCat = state.category === 'All' || p.category === state.category;
+                const matchBrand = state.selectedBrands.length === 0 || state.selectedBrands.includes(p.brand);
+                const matchPrice = p.price <= state.maxPrice;
+                const matchSearch = !state.searchQuery || 
+                    p.name.toLowerCase().includes(state.searchQuery) || 
+                    p.brand.toLowerCase().includes(state.searchQuery) ||
+                    p.category.toLowerCase().includes(state.searchQuery);
+                const matchDiscount = !state.minDiscountOnly || getDiscountPercent(p) >= 50;
+
+                return matchCat && matchBrand && matchPrice && matchSearch && matchDiscount;
+            });
+
+            // Sorting
+            if (state.sortBy === 'price-low') {
+                filtered.sort((a, b) => a.price - b.price);
+            } else if (state.sortBy === 'price-high') {
+                filtered.sort((a, b) => b.price - a.price);
+            } else if (state.sortBy === 'discount') {
+                filtered.sort((a, b) => getDiscountPercent(b) - getDiscountPercent(a));
+            }
+
+            const grid = document.getElementById('productsGrid');
+            const emptyState = document.getElementById('emptyState');
+            document.getElementById('productCount').textContent = `Showing ${filtered.length} ${filtered.length === 1 ? 'item' : 'items'}`;
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(product => {
+                const discount = getDiscountPercent(product);
+                const isWishlisted = state.wishlist.includes(product.id);
+                const safeBrand = product.brand.replace(/'/g, "\\'");
+
+                return `
+                <div class="group bg-white rounded-xl border border-gray-100 hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col">
+                    <!-- Product Image Container -->
+                    <div class="relative aspect-[3/4] bg-gray-100 overflow-hidden cursor-pointer" onclick="openProductModal(${product.id})">
+                        <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="handleImgError(this, '${safeBrand}', '#2c4152')" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                        
+                        <!-- Rating Badge -->
+                        <div class="absolute bottom-2.5 left-2.5 bg-white/95 backdrop-blur-xs px-2 py-0.5 rounded-md text-xs font-bold text-gray-800 shadow-xs flex items-center gap-1">
+                            <span>${product.rating}</span>
+                            <i class="fa-solid fa-star text-ajio-green text-[10px]"></i>
+                        </div>
+
+                        <!-- Wishlist Heart Button -->
+                        <button onclick="event.stopPropagation(); toggleWishlist(${product.id})" class="absolute top-2.5 right-2.5 w-8 h-8 rounded-full bg-white/90 hover:bg-white flex items-center justify-center shadow-sm transition" aria-label="Save to Wishlist">
+                            <i class="${isWishlisted ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart text-gray-700'} text-sm"></i>
+                        </button>
+
+                        <!-- Quick View Hover Bar -->
+                        <div class="hidden md:flex absolute inset-x-0 bottom-0 bg-ajio-dark/90 text-white py-2 text-xs font-bold uppercase tracking-wider justify-center opacity-0 group-hover:opacity-100 transition">
+                            Quick View
+                        </div>
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="p-3.5 flex-1 flex flex-col justify-between text-center">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-wider text-ajio-gold truncate">${product.brand}</p>
+                            <h3 onclick="openProductModal(${product.id})" class="text-xs sm:text-sm font-medium text-gray-800 mt-0.5 line-clamp-1 cursor-pointer hover:text-ajio-dark">${product.name}</h3>
+                        </div>
+
+                        <div class="mt-2">
+                            <div class="flex items-center justify-center flex-wrap gap-1.5">
+                                <span class="text-sm sm:text-base font-extrabold text-gray-900">₹${product.price.toLocaleString('en-IN')}</span>
+                                <span class="text-xs text-gray-400 line-through">₹${product.mrp.toLocaleString('en-IN')}</span>
+                                <span class="text-xs font-bold text-ajio-gold">(${discount}% off)</span>
+                            </div>
+
+                            <button onclick="quickAddToCart(${product.id})" class="mt-3 w-full py-2 px-3 rounded-lg border border-ajio-dark text-ajio-dark hover:bg-ajio-dark hover:text-white text-xs font-bold uppercase tracking-wider transition">
+                                Add to Bag
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // ==========================================
+        // 5. PRODUCT QUICK-VIEW MODAL
+        // ==========================================
+        let activeModalProductId = null;
+        let selectedModalSize = null;
+
+        function openProductModal(id) {
+            const product = PRODUCTS.find(p => p.id === id);
+            if (!product) return;
+
+            activeModalProductId = id;
+            selectedModalSize = product.sizes[0];
+            const discount = getDiscountPercent(product);
+
+            document.getElementById('modalImg').src = product.image;
+            document.getElementById('modalBrand').textContent = product.brand;
+            document.getElementById('modalTitle').textContent = product.name;
+            document.getElementById('modalRating').innerHTML = `${product.rating} <i class="fa-solid fa-star text-[10px]"></i>`;
+            document.getElementById('modalPrice').textContent = `₹${product.price.toLocaleString('en-IN')}`;
+            document.getElementById('modalMrp').textContent = `₹${product.mrp.toLocaleString('en-IN')}`;
+            document.getElementById('modalDiscount').textContent = `(${discount}% OFF)`;
+            document.getElementById('modalDesc').textContent = product.description;
+
+            renderModalSizes(product.sizes);
+
+            document.getElementById('modalAddToCartBtn').onclick = () => {
+                addToCart(product.id, selectedModalSize);
+                closeProductModal();
+            };
+
+            document.getElementById('modalWishlistBtn').onclick = () => {
+                toggleWishlist(product.id);
+                updateModalWishlistIcon(product.id);
+            };
+            updateModalWishlistIcon(product.id);
+
+            const modal = document.getElementById('productModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function renderModalSizes(sizes) {
+            const container = document.getElementById('modalSizes');
+            container.innerHTML = sizes.map(size => `
+                <button onclick="selectModalSize('${size}')" class="px-3.5 py-2 rounded-lg text-xs font-bold border transition ${selectedModalSize === size ? 'bg-ajio-dark text-white border-ajio-dark' : 'bg-white text-gray-700 border-gray-300 hover:border-ajio-dark'}">
+                    ${size}
+                </button>
+            `).join('');
+        }
+
+        function selectModalSize(size) {
+            selectedModalSize = size;
+            const product = PRODUCTS.find(p => p.id === activeModalProductId);
+            if (product) renderModalSizes(product.sizes);
+        }
+
+        function updateModalWishlistIcon(id) {
+            const btn = document.getElementById('modalWishlistBtn');
+            const isWishlisted = state.wishlist.includes(id);
+            btn.innerHTML = `<i class="${isWishlisted ? 'fa-solid fa-heart text-red-500' : 'fa-regular fa-heart'} text-lg"></i>`;
+        }
+
+        function closeProductModal() {
+            const modal = document.getElementById('productModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // ==========================================
+        // 6. SHOPPING BAG & WISHLIST LOGIC
+        // ==========================================
+        function quickAddToCart(productId) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (product) {
+                addToCart(product.id, product.sizes[0]);
+            }
+        }
+
+        function addToCart(productId, size) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = state.cart.find(item => item.id === productId && item.size === size);
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                state.cart.push({
+                    id: product.id,
+                    brand: product.brand,
+                    name: product.name,
+                    price: product.price,
+                    mrp: product.mrp,
+                    image: product.image,
+                    size: size,
+                    qty: 1
+                });
+            }
+
+            updateBadges();
+            renderCartDrawer();
+            showToast(`Added ${product.brand} (${size}) to your bag!`);
+        }
+
+        function updateCartQty(index, delta) {
+            state.cart[index].qty += delta;
+            if (state.cart[index].qty <= 0) {
+                state.cart.splice(index, 1);
+            }
+            updateBadges();
+            renderCartDrawer();
+        }
+
+        function toggleWishlist(productId) {
+            const idx = state.wishlist.indexOf(productId);
+            const product = PRODUCTS.find(p => p.id === productId);
+            if (idx > -1) {
+                state.wishlist.splice(idx, 1);
+                showToast(`Removed from Wishlist`);
+            } else {
+                state.wishlist.push(productId);
+                showToast(`Saved ${product.brand} to Wishlist`);
+            }
+            updateBadges();
+            renderProducts();
+            renderWishlistDrawer();
+        }
+
+        function updateBadges() {
+            const totalItems = state.cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartBadge').textContent = totalItems;
+            document.getElementById('drawerCartCount').textContent = totalItems;
+
+            const wishBadge = document.getElementById('wishlistBadge');
+            if (state.wishlist.length > 0) {
+                wishBadge.textContent = state.wishlist.length;
+                wishBadge.classList.remove('hidden');
+            } else {
+                wishBadge.classList.add('hidden');
+            }
+        }
+
+        function toggleCartDrawer() {
+            const drawer = document.getElementById('cartDrawer');
+            drawer.classList.toggle('hidden');
+            if (!drawer.classList.contains('hidden')) {
+                renderCartDrawer();
+            }
+        }
+
+        function renderCartDrawer() {
+            const container = document.getElementById('cartItemsContainer');
+            const footer = document.getElementById('cartFooter');
+
+            if (state.cart.length === 0) {
+                footer.classList.add('hidden');
+                container.innerHTML = `
+                    <div class="text-center py-16">
+                        <div class="w-16 h-16 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center mx-auto mb-4 text-2xl">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </div>
+                        <h4 class="font-bold text-ajio-dark">Your Shopping Bag is Empty</h4>
+                        <p class="text-xs text-gray-500 mt-1 mb-5">Fill it up with curated fashion & lifestyle essentials.</p>
+                        <button onclick="toggleCartDrawer()" class="bg-ajio-dark text-white px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider">Continue Shopping</button>
+                    </div>
+                `;
+                return;
+            }
+
+            footer.classList.remove('hidden');
+            container.innerHTML = state.cart.map((item, idx) => `
+                <div class="flex gap-3.5 bg-white p-3 rounded-xl border border-gray-200">
+                    <img src="${item.image}" alt="${item.name}" onerror="handleImgError(this, '${item.brand.replace(/'/g, "\\'")}', '#2c4152')" class="w-20 h-24 object-cover rounded-lg bg-gray-100">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-start">
+                                <span class="text-[11px] font-bold uppercase text-ajio-gold">${item.brand}</span>
+                                <button onclick="updateCartQty(${idx}, -${item.qty})" class="text-gray-400 hover:text-red-500 text-xs">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                            <h5 class="text-xs font-semibold text-gray-800 line-clamp-1">${item.name}</h5>
+                            <span class="inline-block mt-1 bg-gray-100 text-gray-600 text-[11px] font-semibold px-2 py-0.5 rounded">Size: ${item.size}</span>
+                        </div>
+
+                        <div class="flex items-center justify-between mt-2">
+                            <div class="flex items-center border border-gray-300 rounded-lg overflow-hidden">
+                                <button onclick="updateCartQty(${idx}, -1)" class="px-2.5 py-0.5 text-xs font-bold hover:bg-gray-100">-</button>
+                                <span class="px-2.5 py-0.5 text-xs font-bold">${item.qty}</span>
+                                <button onclick="updateCartQty(${idx}, 1)" class="px-2.5 py-0.5 text-xs font-bold hover:bg-gray-100">+</button>
+                            </div>
+                            <span class="text-sm font-extrabold text-ajio-dark">₹${(item.price * item.qty).toLocaleString('en-IN')}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Calculate totals
+            const totalMrp = state.cart.reduce((sum, item) => sum + (item.mrp * item.qty), 0);
+            const totalSelling = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const bagDiscount = totalMrp - totalSelling;
+            const couponSavings = (state.couponApplied && totalSelling >= 1500) ? 500 : 0;
+            const finalTotal = Math.max(0, totalSelling - couponSavings);
+
+            document.getElementById('summaryMrp').textContent = `₹${totalMrp.toLocaleString('en-IN')}`;
+            document.getElementById('summaryDiscount').textContent = `-₹${bagDiscount.toLocaleString('en-IN')}`;
+            
+            const couponRow = document.getElementById('couponDiscountRow');
+            if (couponSavings > 0) {
+                couponRow.classList.remove('hidden');
+            } else {
+                couponRow.classList.add('hidden');
+            }
+
+            document.getElementById('summaryTotal').textContent = `₹${finalTotal.toLocaleString('en-IN')}`;
+        }
+
+        function applyCoupon() {
+            const code = document.getElementById('couponInput').value.trim().toUpperCase();
+            const totalSelling = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+            if (code === 'AJIO500' || code === 'AJIONEW') {
+                if (totalSelling < 1500) {
+                    showToast('Add items worth ₹1,500+ to apply AJIO500');
+                    return;
+                }
+                state.couponApplied = true;
+                renderCartDrawer();
+                showToast('Coupon applied! You saved ₹500');
+            } else {
+                showToast('Invalid code. Try AJIO500');
+            }
+        }
+
+        function toggleWishlistDrawer() {
+            const drawer = document.getElementById('wishlistDrawer');
+            drawer.classList.toggle('hidden');
+            if (!drawer.classList.contains('hidden')) {
+                renderWishlistDrawer();
+            }
+        }
+
+        function renderWishlistDrawer() {
+            const container = document.getElementById('wishlistItemsContainer');
+            if (state.wishlist.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16">
+                        <i class="fa-regular fa-heart text-4xl text-gray-300 mb-3"></i>
+                        <h4 class="font-bold text-ajio-dark">Your Wishlist is Empty</h4>
+                        <p class="text-xs text-gray-500 mt-1">Tap the heart icon on any style to save it here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const savedProducts = PRODUCTS.filter(p => state.wishlist.includes(p.id));
+            container.innerHTML = savedProducts.map(p => `
+                <div class="flex gap-3.5 bg-white p-3 rounded-xl border border-gray-200">
+                    <img src="${p.image}" alt="${p.name}" onerror="handleImgError(this, '${p.brand.replace(/'/g, "\\'")}', '#2c4152')" class="w-20 h-24 object-cover rounded-lg bg-gray-100">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div>
+                            <span class="text-[11px] font-bold uppercase text-ajio-gold">${p.brand}</span>
+                            <h5 class="text-xs font-semibold text-gray-800 line-clamp-1">${p.name}</h5>
+                            <span class="text-sm font-extrabold text-ajio-dark mt-1 block">₹${p.price.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div class="flex gap-2 mt-2">
+                            <button onclick="quickAddToCart(${p.id}); toggleWishlistDrawer()" class="flex-1 bg-ajio-dark text-white py-1.5 rounded-lg text-xs font-bold uppercase">Move to Bag</button>
+                            <button onclick="toggleWishlist(${p.id})" class="px-2.5 py-1.5 border border-gray-300 rounded-lg text-xs text-gray-600 hover:text-red-500">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ==========================================
+        // 7. AUTH, CHECKOUT & UTILITY HELPERS
+        // ==========================================
+        function toggleMobileMenu() {
+            document.getElementById('mobileMenu').classList.toggle('hidden');
+        }
+
+        function openAuthModal() {
+            const modal = document.getElementById('authModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeAuthModal() {
+            const modal = document.getElementById('authModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('userNameInput').value.trim();
+            const contact = document.getElementById('userContactInput').value.trim();
+            state.user = { name, contact };
+
+            try {
+                await fetch('/api/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, contact })
+                });
+            } catch (err) {
+                console.info('Offline sign-in fallback:', err.message);
+            }
+
+            document.getElementById('authBtnDesktop').textContent = `Hi, ${name.split(' ')[0]}`;
+            closeAuthModal();
+            showToast(`Welcome to AJIO, ${name}!`);
+        }
+
+        async function proceedToCheckout() {
+            if (state.cart.length === 0) {
+                showToast('Your shopping bag is empty!');
+                return;
+            }
+            if (!state.user) {
+                state.user = { name: 'AJIO Shopper', contact: '9876543210' };
+                document.getElementById('authBtnDesktop').textContent = 'Hi, AJIO';
+            }
+
+            const totalSelling = state.cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const couponSavings = (state.couponApplied && totalSelling >= 1500) ? 500 : 0;
+            state.payableTotal = Math.max(0, totalSelling - couponSavings);
+
+            toggleCartDrawer();
+            openCheckoutAddressStep();
+        }
+
+        function openCheckoutAddressStep() {
+            const modal = document.getElementById('checkoutModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+
+            document.getElementById('addressStepForm').classList.remove('hidden');
+            document.getElementById('paymentStepContainer').classList.add('hidden');
+
+            document.getElementById('step1Indicator').className = 'px-3 py-1 rounded-full bg-ajio-dark text-white';
+            document.getElementById('step2Indicator').className = 'px-3 py-1 rounded-full bg-gray-100 text-gray-500';
+
+            if (state.user && !document.getElementById('shipName').value) {
+                document.getElementById('shipName').value = state.user.name || '';
+            }
+            if (state.shippingAddress) {
+                document.getElementById('shipName').value = state.shippingAddress.fullName || '';
+                document.getElementById('shipPhone').value = state.shippingAddress.phone || '';
+                document.getElementById('shipAddress').value = state.shippingAddress.address || '';
+                document.getElementById('shipPincode').value = state.shippingAddress.pincode || '';
+                document.getElementById('shipCity').value = state.shippingAddress.city || '';
+                document.getElementById('shipState').value = state.shippingAddress.state || '';
+            }
+        }
+
+        function closeCheckoutModal() {
+            const modal = document.getElementById('checkoutModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function checkPincodeServiceability(pin) {
+            const msgEl = document.getElementById('pincodeStatusMsg');
+            const cleanPin = String(pin || '').trim();
+            if (cleanPin.length < 6) {
+                msgEl.className = 'text-xs text-gray-500 min-h-[1rem]';
+                msgEl.textContent = cleanPin.length > 0 ? 'Enter a 6-digit Indian pincode...' : '';
+                return;
+            }
+            if (/^[1-9][0-9]{5}$/.test(cleanPin)) {
+                msgEl.className = 'text-xs text-emerald-700 font-semibold min-h-[1rem]';
+                msgEl.innerHTML = `<i class="fa-solid fa-circle-check mr-1"></i> Delivery available to pincode ${cleanPin} (Free shipping within 3-5 days)`;
+            } else {
+                msgEl.className = 'text-xs text-red-600 font-semibold min-h-[1rem]';
+                msgEl.textContent = 'Please enter a valid 6-digit pincode.';
+            }
+        }
+
+        function submitAddressStep(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('shipName').value.trim();
+            const phone = document.getElementById('shipPhone').value.trim();
+            const address = document.getElementById('shipAddress').value.trim();
+            const pincode = document.getElementById('shipPincode').value.trim();
+            const city = document.getElementById('shipCity').value.trim();
+            const stateName = document.getElementById('shipState').value.trim();
+
+            if (!/^[1-9][0-9]{5}$/.test(pincode)) {
+                showToast('Please enter a valid 6-digit pincode');
+                return;
+            }
+
+            state.shippingAddress = {
+                fullName,
+                phone,
+                address,
+                pincode,
+                city,
+                state: stateName
+            };
+
+            // Populate Step 2 Summary & switch to Payment Method step
+            document.getElementById('summaryShipName').textContent = `${fullName} (${phone})`;
+            document.getElementById('summaryShipFullAddress').textContent = `${address}, ${city}, ${stateName}`;
+            document.getElementById('summaryShipPincode').textContent = pincode;
+            document.getElementById('checkoutPayableAmount').textContent = `₹${state.payableTotal.toLocaleString('en-IN')}`;
+
+            document.getElementById('addressStepForm').classList.add('hidden');
+            document.getElementById('paymentStepContainer').classList.remove('hidden');
+
+            document.getElementById('step1Indicator').className = 'px-3 py-1 rounded-full bg-emerald-100 text-emerald-800';
+            document.getElementById('step2Indicator').className = 'px-3 py-1 rounded-full bg-ajio-dark text-white';
+        }
+
+        function backToAddressStep() {
+            openCheckoutAddressStep();
+        }
+
+        function handlePaymentMethodChange(method) {
+            document.querySelectorAll('#paymentMethodOptions > label').forEach(lbl => {
+                const radio = lbl.querySelector('input[type="radio"]');
+                if (radio && radio.value === method) {
+                    lbl.className = 'flex items-center gap-3 p-3.5 rounded-xl border-2 border-ajio-dark bg-amber-50/40 cursor-pointer transition';
+                } else {
+                    lbl.className = 'flex items-center gap-3 p-3.5 rounded-xl border border-gray-200 hover:border-ajio-dark cursor-pointer transition';
+                }
+            });
+
+            document.getElementById('upiDetailsBox').classList.toggle('hidden', method !== 'UPI');
+            document.getElementById('cardDetailsBox').classList.toggle('hidden', method !== 'Credit / Debit Card');
+            document.getElementById('netbankingDetailsBox').classList.toggle('hidden', method !== 'NetBanking');
+        }
+
+        async function completePaymentAndOrder() {
+            if (!state.shippingAddress) {
+                backToAddressStep();
+                return;
+            }
+
+            const selectedRadio = document.querySelector('input[name="paymentMethod"]:checked');
+            const paymentMethod = selectedRadio ? selectedRadio.value : 'UPI';
+
+            if (paymentMethod === 'UPI') {
+                const upiId = document.getElementById('upiIdInput').value.trim();
+                if (!upiId || !upiId.includes('@')) {
+                    showToast('Please enter a valid UPI ID (e.g. name@upi)');
+                    return;
+                }
+            } else if (paymentMethod === 'Credit / Debit Card') {
+                const cardNum = document.getElementById('cardNumberInput').value.replace(/\s+/g, '');
+                const expiry = document.getElementById('cardExpiryInput').value.trim();
+                const cvv = document.getElementById('cardCvvInput').value.trim();
+                if (cardNum.length < 12 || !expiry || cvv.length < 3) {
+                    showToast('Please fill in valid card details');
+                    return;
+                }
+            }
+
+            let orderId = 'AJ' + Math.floor(100000 + Math.random() * 900000);
+
+            try {
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        customerName: state.shippingAddress.fullName || state.user.name,
+                        customerContact: state.shippingAddress.phone || state.user.contact,
+                        shippingAddress: `${state.shippingAddress.address}, ${state.shippingAddress.city}, ${state.shippingAddress.state}`,
+                        pincode: state.shippingAddress.pincode,
+                        paymentMethod,
+                        items: state.cart,
+                        totalAmount: state.payableTotal
+                    })
+                });
+                if (response.ok) {
+                    const savedOrder = await response.json();
+                    orderId = savedOrder.orderCode;
+                }
+            } catch (err) {
+                console.info('Order processed locally (start Node server for SQLite persistence):', err.message);
+            }
+
+            state.cart = [];
+            state.couponApplied = false;
+            state.payableTotal = 0;
+            updateBadges();
+            closeCheckoutModal();
+            showToast(`Payment via ${paymentMethod} successful! Order #${orderId} placed.`);
+        }
+
+        async function openOrdersModal() {
+            const modal = document.getElementById('ordersModal');
+            const container = document.getElementById('ordersListContainer');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            container.innerHTML = '<p class="text-xs text-gray-500 text-center py-8">Fetching orders from SQLite database...</p>';
+
+            try {
+                const res = await fetch('/api/orders');
+                if (!res.ok) throw new Error('Server offline');
+                const orders = await res.json();
+
+                if (orders.length === 0) {
+                    container.innerHTML = '<p class="text-xs text-gray-500 text-center py-8">No orders found in SQLite yet. Add items to your bag and checkout!</p>';
+                    return;
+                }
+
+                container.innerHTML = orders.map(o => `
+                    <div class="border border-gray-200 rounded-xl p-4 bg-gray-50">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-extrabold text-ajio-dark">Order #${o.order_code}</span>
+                            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">${o.status}</span>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-1">Customer: <strong>${o.customer_name}</strong> (${o.customer_contact})</p>
+                    ${o.shipping_address ? `<p class="text-xs text-gray-600 mt-0.5"><i class="fa-solid fa-location-dot text-ajio-gold mr-1"></i>${o.shipping_address} — <strong>PIN: ${o.pincode || 'N/A'}</strong></p>` : ''}
+                    ${o.payment_method ? `<p class="text-xs text-gray-600 mt-0.5"><i class="fa-solid fa-wallet text-ajio-dark mr-1"></i>Payment: <strong>${o.payment_method}</strong></p>` : ''}
+                    <div class="mt-2 pt-2 border-t border-gray-200 flex justify-between items-center text-xs">
+                            <span class="text-gray-500">${o.items.length} item(s) • ${new Date(o.created_at).toLocaleString()}</span>
+                            <span class="font-extrabold text-ajio-dark">₹${Number(o.total_amount).toLocaleString('en-IN')}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = '<p class="text-xs text-amber-700 bg-amber-50 p-4 rounded-xl text-center">Start the Express backend (<code>npm start</code>) to view live SQLite orders.</p>';
+            }
+        }
+
+        function closeOrdersModal() {
+            const modal = document.getElementById('ordersModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function copyCoupon(code) {
+            const tempInput = document.createElement('input');
+            tempInput.value = code;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast(`Coupon code ${code} copied to clipboard!`);
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'bg-ajio-dark text-white text-xs font-semibold px-4 py-3 rounded-xl shadow-lg border border-white/10 flex items-center gap-2.5 transform transition-all duration-300 translate-y-2 opacity-0';
+            toast.innerHTML = `<i class="fa-solid fa-circle-check text-ajio-accent"></i><span>${message}</span>`;
+            
+            container.appendChild(toast);
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
