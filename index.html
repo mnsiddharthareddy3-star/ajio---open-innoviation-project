@@ -133,7 +133,7 @@
             <button onclick="filterByCategory('Women'); toggleMobileMenu()" class="block w-full text-left py-2.5 px-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">Women</button>
             <button onclick="filterByCategory('Kids'); toggleMobileMenu()" class="block w-full text-left py-2.5 px-3 rounded-lg font-semibold text-gray-700 hover:bg-gray-100">Kids</button>
             <div class="pt-2 border-t border-gray-100 space-y-2">
-                <button onclick="openOrdersModal(); toggleMobileMenu()" class="w-full py-2 border border-ajio-dark text-ajio-dark rounded-lg font-semibold text-sm">My SQLite Orders</button>
+                <button onclick="openOrdersModal(); toggleMobileMenu()" class="w-full py-2 border border-ajio-dark text-ajio-dark rounded-lg font-semibold text-sm">My Orders</button>
                 <button onclick="openAuthModal(); toggleMobileMenu()" class="w-full py-2.5 bg-ajio-dark text-white rounded-lg font-semibold text-sm">Sign In / Join AJIO</button>
             </div>
         </div>
@@ -602,13 +602,13 @@
         </div>
     </div>
 
-    <!-- SQLite Order History Modal -->
+    <!-- Order History Modal (SQLite + Browser Fallback for GitHub/Static Hosting) -->
     <div id="ordersModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
         <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[85vh] flex flex-col">
             <div class="flex items-center justify-between pb-4 border-b border-gray-200">
                 <div>
-                    <h3 class="text-lg font-bold text-ajio-dark">Order History (SQLite Database)</h3>
-                    <p class="text-xs text-gray-500">Live records fetched from <code>database/ajio.sqlite</code></p>
+                    <h3 class="text-lg font-bold text-ajio-dark">My Orders</h3>
+                    <p id="ordersSubtitle" class="text-xs text-gray-500">Live records from SQLite or browser storage</p>
                 </div>
                 <button onclick="closeOrdersModal()" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-500">
                     <i class="fa-solid fa-xmark"></i>
@@ -778,6 +778,8 @@
         // ==========================================
         // 0. APPLICATION STATE & IMAGE FALLBACK
         // ==========================================
+        const ORDERS_STORAGE_KEY = 'ajio_local_orders_v1';
+
         const state = {
             category: 'All',
             selectedBrands: [],
@@ -793,6 +795,26 @@
             shippingAddress: null,
             payableTotal: 0
         };
+
+        function getLocalOrders() {
+            try {
+                const raw = localStorage.getItem(ORDERS_STORAGE_KEY);
+                const parsed = raw ? JSON.parse(raw) : [];
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function saveLocalOrder(orderObj) {
+            try {
+                const existing = getLocalOrders();
+                existing.unshift(orderObj);
+                localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(existing));
+            } catch (e) {
+                console.info('Could not save order to localStorage:', e.message);
+            }
+        }
 
         function createFallbackDataUri(label = 'AJIO', bg = '#2c4152') {
             const safeLabel = String(label || 'AJIO').slice(0, 18);
@@ -1351,10 +1373,10 @@
                     }
                 }
             } catch (err) {
-                console.info('Running in standalone preview mode:', err.message);
+                console.info('Running in standalone/GitHub mode:', err.message);
                 if (badge) {
                     badge.className = 'bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1';
-                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Preview Mode (Start server for SQLite)`;
+                    badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Browser Orders Mode`;
                 }
             }
         }
@@ -2041,15 +2063,31 @@
             }
 
             let orderId = 'AJ' + Math.floor(100000 + Math.random() * 900000);
+            const customerName = state.shippingAddress.fullName || (state.user && state.user.name) || 'AJIO Shopper';
+            const customerContact = state.shippingAddress.phone || (state.user && state.user.contact) || '9876543210';
+            const formattedAddress = `${state.shippingAddress.address}, ${state.shippingAddress.city}, ${state.shippingAddress.state}`;
+
+            const orderPayload = {
+                order_code: orderId,
+                customer_name: customerName,
+                customer_contact: customerContact,
+                shipping_address: formattedAddress,
+                pincode: state.shippingAddress.pincode,
+                payment_method: paymentMethod,
+                items: state.cart.slice(),
+                total_amount: state.payableTotal,
+                status: 'Confirmed',
+                created_at: new Date().toISOString()
+            };
 
             try {
                 const response = await fetch('/api/orders', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        customerName: state.shippingAddress.fullName || state.user.name,
-                        customerContact: state.shippingAddress.phone || state.user.contact,
-                        shippingAddress: `${state.shippingAddress.address}, ${state.shippingAddress.city}, ${state.shippingAddress.state}`,
+                        customerName,
+                        customerContact,
+                        shippingAddress: formattedAddress,
                         pincode: state.shippingAddress.pincode,
                         paymentMethod,
                         items: state.cart,
@@ -2058,10 +2096,16 @@
                 });
                 if (response.ok) {
                     const savedOrder = await response.json();
-                    orderId = savedOrder.orderCode;
+                    if (savedOrder && savedOrder.orderCode) {
+                        orderId = savedOrder.orderCode;
+                        orderPayload.order_code = orderId;
+                    }
+                } else {
+                    saveLocalOrder(orderPayload);
                 }
             } catch (err) {
-                console.info('Order processed locally (start Node server for SQLite persistence):', err.message);
+                saveLocalOrder(orderPayload);
+                console.info('Saved order to browser storage for GitHub/static hosting:', err.message);
             }
 
             state.cart = [];
@@ -2072,40 +2116,52 @@
             showToast(`Payment via ${paymentMethod} successful! Order #${orderId} placed.`);
         }
 
-        async function openOrdersModal() {
-            const modal = document.getElementById('ordersModal');
+        function renderOrdersCards(orders, sourceLabel) {
             const container = document.getElementById('ordersListContainer');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            container.innerHTML = '<p class="text-xs text-gray-500 text-center py-8">Fetching orders from SQLite database...</p>';
+            const subtitle = document.getElementById('ordersSubtitle');
+            if (subtitle) {
+                subtitle.textContent = sourceLabel;
+            }
 
-            try {
-                const res = await fetch('/api/orders');
-                if (!res.ok) throw new Error('Server offline');
-                const orders = await res.json();
+            if (!Array.isArray(orders) || orders.length === 0) {
+                container.innerHTML = '<p class="text-xs text-gray-500 text-center py-8">No orders found yet. Add items to your bag, enter your address & pincode, and place an order!</p>';
+                return;
+            }
 
-                if (orders.length === 0) {
-                    container.innerHTML = '<p class="text-xs text-gray-500 text-center py-8">No orders found in SQLite yet. Add items to your bag and checkout!</p>';
-                    return;
-                }
-
-                container.innerHTML = orders.map(o => `
-                    <div class="border border-gray-200 rounded-xl p-4 bg-gray-50">
-                        <div class="flex items-center justify-between">
-                            <span class="text-xs font-extrabold text-ajio-dark">Order #${o.order_code}</span>
-                            <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">${o.status}</span>
+            container.innerHTML = orders.map(o => `
+                <div class="border border-gray-200 rounded-xl p-4 bg-gray-50">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-extrabold text-ajio-dark">Order #${o.order_code}</span>
+                        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">${o.status || 'Confirmed'}</span>
                     </div>
                     <p class="text-xs text-gray-600 mt-1">Customer: <strong>${o.customer_name}</strong> (${o.customer_contact})</p>
                     ${o.shipping_address ? `<p class="text-xs text-gray-600 mt-0.5"><i class="fa-solid fa-location-dot text-ajio-gold mr-1"></i>${o.shipping_address} — <strong>PIN: ${o.pincode || 'N/A'}</strong></p>` : ''}
                     ${o.payment_method ? `<p class="text-xs text-gray-600 mt-0.5"><i class="fa-solid fa-wallet text-ajio-dark mr-1"></i>Payment: <strong>${o.payment_method}</strong></p>` : ''}
                     <div class="mt-2 pt-2 border-t border-gray-200 flex justify-between items-center text-xs">
-                            <span class="text-gray-500">${o.items.length} item(s) • ${new Date(o.created_at).toLocaleString()}</span>
-                            <span class="font-extrabold text-ajio-dark">₹${Number(o.total_amount).toLocaleString('en-IN')}</span>
-                        </div>
+                        <span class="text-gray-500">${(o.items || []).length} item(s) • ${o.created_at ? new Date(o.created_at).toLocaleString() : 'Just now'}</span>
+                        <span class="font-extrabold text-ajio-dark">₹${Number(o.total_amount || 0).toLocaleString('en-IN')}</span>
                     </div>
-                `).join('');
+                </div>
+            `).join('');
+        }
+
+        async function openOrdersModal() {
+            const modal = document.getElementById('ordersModal');
+            const container = document.getElementById('ordersListContainer');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            container.innerHTML = '<p class="text-xs text-gray-500 text-center py-8">Loading your orders...</p>';
+
+            try {
+                const res = await fetch('/api/orders');
+                if (!res.ok) throw new Error('Backend unavailable');
+                const dbOrders = await res.json();
+                const localOrders = getLocalOrders();
+                const merged = [...dbOrders, ...localOrders];
+                renderOrdersCards(merged, 'Live records from SQLite (database/ajio.sqlite)');
             } catch (err) {
-                container.innerHTML = '<p class="text-xs text-amber-700 bg-amber-50 p-4 rounded-xl text-center">Start the Express backend (<code>npm start</code>) to view live SQLite orders.</p>';
+                const localOrders = getLocalOrders();
+                renderOrdersCards(localOrders, 'Saved orders in this browser (GitHub Pages / Static Mode)');
             }
         }
 
