@@ -1,0 +1,23 @@
+{
+  "name": "ajio-ecommerce-project",
+  "version": "2.0.0",
+  "description": "AJIO Full-Stack E-Commerce Web Application with SQLite Database",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node server/server.js"
+  },
+  "keywords": [
+    "ajio",
+    "ecommerce",
+    "sqlite",
+    "express",
+    "nodejs"
+  ],
+  "author": "Student Project",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.7"
+  }
+}
